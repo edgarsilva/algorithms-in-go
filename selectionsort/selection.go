@@ -1,20 +1,22 @@
-package main
+package selectionsort
 
 import (
 	"fmt"
-	"time"
+	"slices"
 )
 
-func main() {
+func Assert() bool {
 	list := List{
 		items: []int{5, 4, 7, 9, 2, 1, 3, 8, 6},
 	}
-	fmt.Println("Bubblesort Algorithm")
+	fmt.Println("Selection Sort Algorithm")
 	fmt.Println("Sorting -> ", list)
 
-	Bubblesort(&list)
+	Selectionsort(&list)
 
 	fmt.Println("Sorted ->", list.items)
+
+	return slices.Compare(list.items, []int{1, 2, 3, 4, 5, 6, 7, 8, 9}) == 0
 }
 
 type Sortable interface {
@@ -23,16 +25,19 @@ type Sortable interface {
 	Swap(i, j int)
 }
 
-func Bubblesort(list Sortable) {
+func Selectionsort(list Sortable) {
 	items := list.Items()
 	n := len(items)
 	for i := 0; i < n-1; i++ {
-		for j := 0; j < n-i-1; j++ {
-			if list.Compare(j, j+1) {
-				list.Swap(j, j+1)
-				fmt.Println("Swap", list.Items()[j], "with", list.Items()[j+1])
+		// the diff with Bubblesort is here
+		// we compare the last sorted elem with all the following ones
+		// always selecting/moving the smallest one to its final position
+		for j := i + 1; j < n; j++ {
+			if list.Compare(i, j) { // <- we alwayst comarse the last sorted one with all the remaining
+				list.Swap(i, j)
+				fmt.Println("Swap", list.Items()[i], "with", list.Items()[j])
 				fmt.Printf("%v\033[F", list.Items())
-				time.Sleep(500 * time.Millisecond)
+				// time.Sleep(1000 * time.Millisecond)
 			}
 		}
 	}
