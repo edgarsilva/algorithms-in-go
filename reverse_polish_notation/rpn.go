@@ -14,7 +14,7 @@ func Assert() bool {
 	exp = handleImplicitMult(exp)
 	fmt.Println("W/o implicit mult", exp)
 
-	rpn := ExpToRPN(exp)
+	rpn := expToRPN(exp)
 	fmt.Println("RPN notation", strings.Join(rpn, " "))
 
 	result := EvalMathExp(exp)
@@ -25,13 +25,32 @@ func Assert() bool {
 
 func EvalMathExp(exp string) string {
 	exp = handleImplicitMult(exp)
-	rpn := ExpToRPN(exp)
-	result := EvalRPN(rpn)
+	rpn := expToRPN(exp)
+	result := evalRPN(rpn)
 
 	return result
 }
 
-func ExpToRPN(exp string) []string {
+func evalRPN(rpn []string) string {
+	var stack []float64
+
+	for _, token := range rpn {
+		if isOp(token) {
+			a := stack[len(stack)-2]
+			b := stack[len(stack)-1]
+			stack = stack[:len(stack)-2]
+			result := doMath(a, b, token)
+			stack = append(stack, result)
+		} else {
+			num, _ := strconv.ParseFloat(token, 64)
+			stack = append(stack, num)
+		}
+	}
+
+	return strconv.FormatFloat(stack[0], 'f', 2, 64)
+}
+
+func expToRPN(exp string) []string {
 	var operators Stack[rune]
 	var output Stack[string]
 
@@ -41,8 +60,8 @@ func ExpToRPN(exp string) []string {
 	for i := 0; i < n; i++ {
 		c := runeExp[i]
 		if unicode.IsDigit(c) {
-			num := []rune{}
-			for i+1 < n && unicode.IsDigit(runeExp[i+1]) {
+			num := []rune{c}
+			for i+1 < n && (unicode.IsDigit(runeExp[i+1]) || runeExp[i+1] == '.') {
 				i++
 				num = append(num, runeExp[i])
 			}
@@ -54,7 +73,7 @@ func ExpToRPN(exp string) []string {
 				output.Push(string(operators.Last()))
 				operators.Pop()
 			}
-			operators.Pop()
+			operators.Pop() // <-- remove paren (
 		} else if isOp(string(c)) {
 			for operators.Len() > 0 &&
 				isOp(string(operators.Last())) &&
@@ -100,25 +119,6 @@ func doMath(a, b float64, op string) float64 {
 		return a / b
 	}
 	panic("operation not supported")
-}
-
-func EvalRPN(rpn []string) string {
-	var stack []float64
-
-	for _, token := range rpn {
-		if isOp(token) {
-			a := stack[len(stack)-2]
-			b := stack[len(stack)-1]
-			stack = stack[:len(stack)-2]
-			result := doMath(a, b, token)
-			stack = append(stack, result)
-		} else {
-			num, _ := strconv.ParseFloat(token, 64)
-			stack = append(stack, num)
-		}
-	}
-
-	return strconv.FormatFloat(stack[0], 'f', 2, 64)
 }
 
 type Stack[T any] struct {

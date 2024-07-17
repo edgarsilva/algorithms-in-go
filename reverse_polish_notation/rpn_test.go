@@ -12,16 +12,12 @@ func TestAssert(t *testing.T) {
 	}
 }
 
-func TestHandleImplicitMult(t *testing.T) {
-	// list := List{
-	// 	items: []int{2, 4, 5, 3, 1},
-	// }
-	//
-	// Bubblesort(&list)
-	// got := list.items
-	// want := []int{1, 2, 3, 4, 5}
-	//
-	// if slices.Compare(got, want) != 0 {
-	// 	t.Errorf("got %#v want %#v", got, want)
-	// }
+func TestEvalMathExp(t *testing.T) {
+	exp := "(4*3)+2(3)-5"
+	got := EvalMathExp(exp)
+	want := "13.00"
+
+	if got != want {
+		t.Errorf("got %#v want %#v", got, want)
+	}
 }
