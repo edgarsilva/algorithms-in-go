@@ -5,7 +5,7 @@ import (
 )
 
 func TestTwoSum(t *testing.T) {
-	sumTests := []struct {
+	testcases := []struct {
 		nums   []int
 		target int
 		want   [2]int
@@ -15,7 +15,7 @@ func TestTwoSum(t *testing.T) {
 		{[]int{5, 5}, 10, [2]int{0, 1}},
 	}
 
-	for _, st := range sumTests {
+	for _, st := range testcases {
 		nums := st.nums
 		target := st.target
 		got := TwoSum(target, nums)
