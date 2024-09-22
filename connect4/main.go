@@ -12,10 +12,17 @@ const (
 )
 
 type Column struct {
-	Rows [rows]string
+	Rows []string
 }
 
-func (c *Column) Length() int {
+func NewColumn(rows int) Column {
+	col := Column{}
+	col.Rows = make([]string, rows)
+
+	return col
+}
+
+func (c *Column) Len() int {
 	for i := 0; i < len(c.Rows); i++ {
 		if c.Rows[i] != "" {
 			return i + 1
@@ -37,23 +44,30 @@ func (c *Column) Push(val string) {
 }
 
 type Board struct {
-	Columns [cols]Column
+	Columns []Column
 }
 
 func (b *Board) Point(col, row int) string {
 	return b.Columns[col].Rows[row]
 }
 
-func main() {
+func NewBoard(cols, rows int) Board {
 	board := Board{}
+	board.Columns = make([]Column, cols)
+
 	for i := 0; i < cols; i++ {
-		board.Columns[i] = Column{}
+		board.Columns[i] = NewColumn(rows)
 	}
 
+	return board
+}
+
+func main() {
+	board := NewBoard(cols, rows)
 	playerTurn := "A"
 	input := ""
 
-	fmt.Println("Hello Connect 4")
+	fmt.Println("Welcome to  Connect 4")
 
 	for {
 		PrintBoard(board, playerTurn)
@@ -65,7 +79,12 @@ func main() {
 
 		_, err := fmt.Scanln(&input)
 		if err != nil {
-			log.Panic("An error occurred")
+			if err.Error() == "unexpected newline" {
+				fmt.Println("No move detected", PrevLine)
+				continue
+			}
+
+			log.Panic("An error has occurred", err)
 		}
 
 		if input == "exit" {
@@ -81,9 +100,9 @@ func main() {
 
 		inputCol--
 		col := board.Columns[inputCol]
-		if col.Length() < rows {
+		if col.Len() < rows {
 			col.Push(playerTurn)
-			board.Columns[inputCol] = col
+			// board.Columns[inputCol] = col
 		} else {
 			fmt.Println("this column is already full", cols)
 		}
