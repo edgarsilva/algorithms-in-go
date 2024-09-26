@@ -15,6 +15,7 @@ func TopKFrequent(nums []int, k int) []int {
 	for _, num := range nums {
 		if f, ok := m[num]; !ok {
 			m[num] = Freq{key: num, count: 1}
+			continue
 		} else {
 			f.count++
 			m[num] = f
@@ -29,11 +30,13 @@ func TopKFrequent(nums []int, k int) []int {
 	slices.SortFunc(sorted, func(a Freq, b Freq) int {
 		if a.count > b.count {
 			return -1
-		} else if a.count < b.count {
-			return +1
-		} else {
-			return 0
 		}
+
+		if a.count < b.count {
+			return +1
+		}
+
+		return 0
 	})
 
 	res := make([]int, 0, k)
@@ -42,4 +45,38 @@ func TopKFrequent(nums []int, k int) []int {
 	}
 
 	return res
+}
+
+// TopKFreqBucket using bucket sorted has bigger space but should have O time
+// perf, basically O(n) since we are not acteally sorting the slice
+func TopKFreqBucket(nums []int, k int) []int {
+	counter := make(map[int]Freq)
+
+	for _, num := range nums {
+		f, exists := counter[num]
+		if !exists {
+			counter[num] = Freq{key: num, count: 1}
+			continue
+		}
+
+		f.count++
+		counter[num] = f
+	}
+
+	bucket := make([][]int, len(nums)+1)
+	for k, c := range counter {
+		bucket[c.count] = append(bucket[c.count], k)
+	}
+
+	results := make([]int, 0, k)
+	for i := len(bucket) - 1; i > 0; i-- {
+		for _, n := range bucket[i] {
+			results = append(results, n)
+			if len(results) == k {
+				return results
+			}
+		}
+	}
+
+	return results
 }
