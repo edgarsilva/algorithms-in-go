@@ -14,9 +14,11 @@ func IsAnagram(s string, t string) bool {
 
 	freq := make(map[rune]int)
 
-	for i := 0; i < len(s); i++ {
-		freq[rune(s[i])]++
-		freq[rune(t[i])]--
+	sr := []rune(s)
+	tr := []rune(t)
+	for i := 0; i < len(sr); i++ {
+		freq[sr[i]]++
+		freq[tr[i]]--
 	}
 
 	for _, v := range freq {
