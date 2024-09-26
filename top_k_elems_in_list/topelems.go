@@ -10,7 +10,7 @@ type Freq struct {
 }
 
 func TopKFrequent(nums []int, k int) []int {
-	m := make(map[int]Freq)
+	m := make(map[int]Freq, len(nums)+1)
 
 	for _, num := range nums {
 		if f, ok := m[num]; !ok {
@@ -50,22 +50,22 @@ func TopKFrequent(nums []int, k int) []int {
 // TopKFreqBucket using bucket sorted has bigger space but should have O time
 // perf, basically O(n) since we are not acteally sorting the slice
 func TopKFreqBucket(nums []int, k int) []int {
-	counter := make(map[int]Freq)
+	counter := make(map[int]int, len(nums)+1)
 
 	for _, num := range nums {
 		f, exists := counter[num]
 		if !exists {
-			counter[num] = Freq{key: num, count: 1}
+			counter[num] = 1
 			continue
 		}
 
-		f.count++
+		f++
 		counter[num] = f
 	}
 
 	bucket := make([][]int, len(nums)+1)
 	for k, c := range counter {
-		bucket[c.count] = append(bucket[c.count], k)
+		bucket[c] = append(bucket[c], k)
 	}
 
 	results := make([]int, 0, k)
