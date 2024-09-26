@@ -7,9 +7,12 @@ import (
 )
 
 const (
-	rows = 6
-	cols = 7
+	rows     = 6
+	cols     = 7
+	PrevLine = "\033[F"
 )
+
+var firstPaint = true
 
 type Column struct {
 	Rows []string
@@ -64,7 +67,7 @@ func NewBoard(cols, rows int) Board {
 
 func main() {
 	board := NewBoard(cols, rows)
-	playerTurn := "A"
+	playerTurn := NextTurn("")
 	input := ""
 
 	fmt.Println("Welcome to  Connect 4")
@@ -73,7 +76,8 @@ func main() {
 		PrintBoard(board, playerTurn)
 
 		if CheckWin(board, NextTurn(playerTurn)) {
-			fmt.Println("Player ", NextTurn(playerTurn), "wins the game!!!")
+			prevPlayer := PlayerName(NextTurn(playerTurn))
+			fmt.Println("\n🎖️🎖️🎖️Player", prevPlayer, "wins the game🎖️🎖️🎖️")
 			break
 		}
 
@@ -111,17 +115,21 @@ func main() {
 	}
 }
 
-func NextTurn(playerTurn string) string {
-	if playerTurn == "A" {
-		return "B"
+func PlayerName(player string) string {
+	if player == "D" {
+		return "DIANA 👸"
 	}
 
-	return "A"
+	return "EDGAR"
 }
 
-const PrevLine = "\033[F"
+func NextTurn(playerTurn string) string {
+	if playerTurn == "D" {
+		return "E"
+	}
 
-var firstPaint = true
+	return "D"
+}
 
 func PrintBoard(board Board, playerTurn string) {
 	rewind := ""
@@ -132,7 +140,7 @@ func PrintBoard(board Board, playerTurn string) {
 			rewind += PrevLine
 		}
 	}
-	fmt.Printf("%vConnect 4: player %v turn\n", rewind, playerTurn)
+	fmt.Printf("%vConnect 4: %v turn\n", rewind, PlayerName(playerTurn))
 
 	for i := rows - 1; i >= 0; i-- {
 		for j := 0; j < cols; j++ {
