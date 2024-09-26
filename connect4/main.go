@@ -14,20 +14,18 @@ const (
 
 var firstPaint = true
 
-type Column struct {
-	Rows []string
-}
+type Column []string
 
 func NewColumn(rows int) Column {
 	col := Column{}
-	col.Rows = make([]string, rows)
+	col = make([]string, rows)
 
 	return col
 }
 
-func (c *Column) Len() int {
-	for i := 0; i < len(c.Rows); i++ {
-		if c.Rows[i] != "" {
+func (c Column) Len() int {
+	for i := 0; i < len(c); i++ {
+		if c[i] != "" {
 			return i + 1
 		}
 	}
@@ -35,31 +33,29 @@ func (c *Column) Len() int {
 	return 0
 }
 
-func (c *Column) Push(val string) {
-	for i := 0; i < len(c.Rows); i++ {
-		if c.Rows[i] != "" {
+func (c Column) Push(val string) {
+	for i := 0; i < len(c); i++ {
+		if c[i] != "" {
 			continue
 		}
 
-		c.Rows[i] = val
+		c[i] = val
 		break
 	}
 }
 
-type Board struct {
-	Columns []Column
-}
+type Board []Column
 
-func (b *Board) Point(col, row int) string {
-	return b.Columns[col].Rows[row]
+func (b Board) Point(col, row int) string {
+	return b[col][row]
 }
 
 func NewBoard(cols, rows int) Board {
 	board := Board{}
-	board.Columns = make([]Column, cols)
+	board = make([]Column, cols)
 
 	for i := 0; i < cols; i++ {
-		board.Columns[i] = NewColumn(rows)
+		board[i] = NewColumn(rows)
 	}
 
 	return board
@@ -103,7 +99,7 @@ func main() {
 		}
 
 		inputCol--
-		col := board.Columns[inputCol]
+		col := board[inputCol]
 		if col.Len() < rows {
 			col.Push(playerTurn)
 			// board.Columns[inputCol] = col
@@ -144,11 +140,11 @@ func PrintBoard(board Board, playerTurn string) {
 
 	for i := rows - 1; i >= 0; i-- {
 		for j := 0; j < cols; j++ {
-			col := board.Columns[j]
-			if col.Rows[i] == "" {
+			col := board[j]
+			if col[i] == "" {
 				fmt.Printf("- ")
 			} else {
-				fmt.Printf("%v ", col.Rows[i])
+				fmt.Printf("%v ", col[i])
 			}
 		}
 
