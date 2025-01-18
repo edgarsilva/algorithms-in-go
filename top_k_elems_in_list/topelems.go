@@ -48,7 +48,7 @@ func TopKFrequent(nums []int, k int) []int {
 }
 
 // TopKFreqBucket using bucket sorted has bigger space but should have O time
-// perf, basically O(n) since we are not acteally sorting the slice
+// perf, basically O(n) since we are not actually sorting the slice
 func TopKFreqBucket(nums []int, k int) []int {
 	counter := make(map[int]int, len(nums)+1)
 

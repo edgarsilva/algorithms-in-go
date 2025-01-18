@@ -1,6 +1,8 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 // Clarifies once and for all the difference of creating new variables from arrays
 // or/and slices, composite types vs discrete types.
@@ -24,32 +26,51 @@ import "fmt"
 //     this slice gets a new backing array pointer, and now the two slices no
 //     longer share the same backing array memory.
 func main() {
-	arrayBehavior()
+	// arrayBehavior()
 	fmt.Println("------------------------------------")
 	sliceBehavior()
 }
 
 func arrayBehavior() {
-	arr1 := [5]int{1, 2, 3, 4, 5}
+	arr1 := [5]int{9, 9, 9, 9, 9}
 
-	fmt.Println("Arr1 was defined as [1,2,3,4,5]:")
-	fmt.Printf("%#v\n", arr1)
-	fmt.Printf("arr1 mem address %p\n\n", &arr1)
+	fmt.Println("arr1 := [5]int{9,9,9,9,9}")
+	fmt.Printf("arr1 mem address %p\n", &arr1)
+	fmt.Printf("arr1 -> %#v\n\n", arr1)
 
-	fmt.Println("When creating a new array variable(arr2) from an existing array(arr1)")
-	fmt.Println("the whole array (the whole chunk of mem) is copied into a new memory location,")
-	fmt.Printf("so modifing the second array does not modify the array from wich it was originated.\n\n")
+	// fmt.Println("When creating a new array variable(arr2) from an existing array(arr1)")
+	// fmt.Println("the whole array (the whole chunk of mem) is copied into a new memory location,")
+	// fmt.Printf("so modifing the second array does not modify the array from wich it was originated.\n\n")
 
-	arr2 := arr1
-	fmt.Printf("Arr2 was defined as arr2 := arr1(%#v)", arr1)
-	fmt.Printf("%#v\n", arr2)
-	fmt.Printf("arr2 mem address %p\n\n", &arr2)
+	var arr2 [5]int
+	fmt.Printf("var arr2 [5]int\n")
+	fmt.Printf("arr2 mem address %p\n", &arr2)
+	fmt.Printf("arr2 -> %#v\n\n", arr2)
 
-	fmt.Println("So modifing index 0 and 1 to the values 6,7 won't affect the original arr1")
+	arr2 = arr1
+	fmt.Printf("arr2 = arr1\n")
+	fmt.Printf("arr1 -> %#v\n", arr1)
+	fmt.Printf("arr2 -> %#v\n\n", arr2)
+
+	// fmt.Println("So modifing index 0 and 1 to the values 6,7 won't affect the original arr1")
+	fmt.Printf("arr2[0] = 5\n")
+	fmt.Printf("arr2[1] = 6\n")
 	arr2[0] = 6
-	arr2[1] = 7
-	fmt.Printf("Arr2 %#v\n", arr2)
-	fmt.Printf("arr2 mem address %p\n\n", &arr2)
+	arr2[1] = 6
+	fmt.Printf("arr1 -> %#v\n", arr1)
+	fmt.Printf("arr2 -> %#v\n\n", arr2)
+
+	arr1[0] = 0
+	arr1[1] = 0
+	fmt.Printf("arr1[0] = 0\n")
+	fmt.Printf("arr1[1] = 0\n")
+	fmt.Printf("arr1 -> %#v\n", arr1)
+	fmt.Printf("arr2 -> %#v\n\n", arr2)
+
+	arr1 = [5]int{}
+	fmt.Printf("clear(arr1)")
+	fmt.Printf("arr1 -> %#v\n", arr1)
+	fmt.Printf("arr2 -> %#v\n\n", arr2)
 }
 
 func sliceBehavior() {

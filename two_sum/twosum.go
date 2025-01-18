@@ -1,13 +1,13 @@
 package twosum
 
 func TwoSum(target int, nums []int) [2]int {
-	m := make(map[int]int)
-	for i, v := range nums {
-		if valIdx, exists := m[target-v]; exists {
-			return [2]int{valIdx, i}
+	complementMap := make(map[int]int)
+	for currentIdx, currentVal := range nums {
+		if complementIdxVal, complementExists := complementMap[target-currentVal]; complementExists {
+			return [2]int{complementIdxVal, currentIdx}
 		}
 
-		m[v] = i
+		complementMap[currentVal] = currentIdx
 	}
 
 	return [2]int{}
